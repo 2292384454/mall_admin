@@ -1,0 +1,243 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+
+<head>
+    <title>MALL</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <!-- VENDOR CSS -->
+    <link rel="stylesheet" th:href="@{/assets/vendor/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/vendor/font-awesome/css/font-awesome.min.css}">
+    <link rel="stylesheet" th:href="@{/assets/vendor/linearicons/style.css}">
+    <link rel="stylesheet" th:href="@{/assets/vendor/chartist/css/chartist-custom.css}">
+    <!-- MAIN CSS -->
+    <link rel="stylesheet" th:href="@{/assets/css/main.css}">
+    <!-- FOR DEMO PURPOSES ONLY. You should remove this in your project -->
+    <link rel="stylesheet" th:href="@{/assets/css/demo.css}">
+    <!-- GOOGLE FONTS -->
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700" rel="stylesheet">
+    <!-- ICONS -->
+    <link rel="apple-touch-icon" sizes="76x76" th:href="@{/assets/img/apple-icon.png}">
+    <link rel="icon" type="image/png" sizes="96x96" th:href="@{/assets/img/favicon.png}">
+</head>
+
+<body>
+<script>
+    function confirmSubmit() {
+        if (confirm("商品删除后将无法恢复，确认删除？")) {
+            document.getElementById("delele_form").submit();
+        }
+        return false;
+    }
+</script>
+<!-- WRAPPER -->
+<div id="wrapper">
+    <!-- NAVBAR -->
+    <div th:replace="~{commons/commons::navbar}"></div>
+    <!-- END NAVBAR -->
+    <!-- LEFT SIDEBAR -->
+    <div th:replace="~{commons/commons::sidebar}"></div>
+    <!-- END LEFT SIDEBAR -->
+    <!-- MAIN -->
+    <div class="main">
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="container-fluid">
+                        <!-- RECENT PURCHASES -->
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">商品列表</h3>
+                            </div>
+                            <div class="panel-body no-padding">
+                                <form class="navbar-form navbar-left" th:action="@{/admin/product_admin/product_list}">
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">商品编号</span>
+                                        <input type="text" name="code" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('code')}">
+                                    </div>
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">商品名称</span>
+                                        <input type="text" name="name" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('name')}">
+                                    </div>
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">商品种类</span>
+                                        <select name="type" class="form-control">
+                                            <option th:text="全部"></option>
+                                            <option th:each=" type : ${typeList}" th:value="${type.id}"
+                                                    th:text="${type.name}"
+                                                    th:selected="${#httpServletRequest.getParameter('type')} eq ${type.id}">
+                                            </option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">商品品牌</span>
+                                        <input type="text" name="brand" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('brand')}">
+                                    </div>
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">商品价格</span>
+                                        <input type="text" name="from" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('from')}">
+                                        <span class="input-group-addon">~</span>
+                                        <input type="text" name="to" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('to')}">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>Search
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="panel-body no-padding form-inline">
+                                <form id="delele_form" method="POST" th:action="@{product_list}">
+                                    <!-- 添加商品按钮 -->
+                                    <a th:href="@{create_pro}" type="submit" class="btn btn-primary btn-xs">
+                                        <i class="lnr lnr-file-add"></i>添加
+                                    </a>
+                                    <!-- 删除商品按钮 -->
+                                    <button class="btn btn-primary btn-xs" onclick="return confirmSubmit()">
+                                        <i class="lnr lnr-file-add"></i>删除
+                                    </button>
+                                    <br>
+                                    <!-- 删除成功提示信息 -->
+                                    <div class="panel-body no-padding form-inline"
+                                         th:if="${#httpServletRequest.getParameter('delete_count')!=null}">
+                                        <div class="alert alert-info alert-dismissible" role="alert"
+                                             th:with="count=${#httpServletRequest.getParameter('delete_count')}">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                            <i class="fa fa-info-circle"
+                                               th:text="${count+' 个商品删除成功'}"></i>
+                                        </div>
+                                    </div>
+                                    <!-- 未选中要删除的商品提示信息-->
+                                    <div class="panel-body no-padding form-inline"
+                                         th:if="${#httpServletRequest.getParameter('error')!=null}">
+                                        <div class="alert alert-danger alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                            <i class="fa fa-info-circle">请选择要删除的商品</i>
+                                        </div>
+                                    </div>
+                                    <!-- 添加商品提示信息-->
+                                    <div class="panel-body no-padding form-inline"
+                                         th:if="${#httpServletRequest.getParameter('create')!=null}">
+                                        <div class="alert alert-info alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                            <i class="fa fa-info-circle">添加（修改）商品成功</i>
+                                        </div>
+                                    </div>
+                                    <table class=" table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>选择</th>
+                                            <th>id</th>
+                                            <th>code</th>
+                                            <th>name</th>
+                                            <th>type</th>
+                                            <th>brand</th>
+                                            <th>picture</th>
+                                            <th>num</th>
+                                            <th>price</th>
+                                            <th width="200px">introduce</th>
+                                            <th>status</th>
+                                            <th>edit</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each=" product : ${products}">
+                                            <th>
+                                                <label class="fancy-checkbox">
+                                                    <input type="checkbox" name="removeIds"
+                                                           th:value="${product.getId()}">
+                                                    <span></span>
+                                                </label>
+                                            </th>
+                                            <th scope="row" th:text="${product.getId()}"></th>
+                                            <td th:text="${product.getCode()}"></td>
+                                            <td th:text="${product.getName()}"></td>
+                                            <td th:text="${product.getType()}"></td>
+                                            <td th:text="${product.getBrand()}"></td>
+                                            <td><img th:src="@{'/'+${product.getPic()}}" width="200px" alt="picture">
+                                            </td>
+                                            <td th:text="${product.getNum()}"></td>
+                                            <td th:text="'￥'+${product.getPrice()}"></td>
+                                            <td th:text="${product.getIntro()}"></td>
+                                            <td th:switch="${product.getStatus()}">
+                                                <p th:case="1">在售</p>
+                                                <p th:case="0">下架</p>
+                                            </td>
+                                            <td>
+                                                <a th:href="@{edit_pro(edit_id=${product.getId()})}">修改</a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="modal-footer no-margin-top">
+                                        <!--使用 th:with 保留所有的筛选条件 -->
+                                        <ul class="pagination pull-right no-margin"
+                                            th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}">
+                                            <!-- 首页 -->
+                                            <li th:if="${products.getTotalPages()} gt 0">
+                                                <a th:href="${urlBuilder.replaceQueryParam('pageNum',0).build().toUriString()}"
+                                                   th:text="首页"></a>
+                                            </li>
+                                            <!-- 上一页 -->
+                                            <li th:if="${products.hasPrevious()}">
+                                                <a th:href="${urlBuilder.replaceQueryParam('pageNum',products.previousPageable().getPageNumber()).build().toUriString()}"
+                                                   th:text=" 上一页"></a>
+                                            </li>
+                                            <!-- 中间页 -->
+                                            <li th:if="${products.getTotalPages()} gt 0"
+                                                th:each="pageNum:${#numbers.sequence(0, products.getTotalPages() - 1)}">
+                                                <a th:href="${urlBuilder.replaceQueryParam('pageNum',pageNum).build().toUriString()}"
+                                                   th:text="${pageNum + 1}"
+                                                   th:if="${pageNum ne products.pageable.getPageNumber()}"></a>
+                                                <a th:href="${urlBuilder.replaceQueryParam('pageNum',pageNum).build().toUriString()}"
+                                                   th:text="${pageNum + 1}"
+                                                   th:if="${pageNum eq products.pageable.getPageNumber()}"></a>
+                                            </li>
+                                            <!-- 下一页 -->
+                                            <li th:if="${products.hasNext()}">
+                                                <a th:href="${urlBuilder.replaceQueryParam('pageNum',products.nextPageable().getPageNumber()).build().toUriString()}"
+                                                   th:text="下一页"></a>
+                                            </li>
+                                            <!-- 尾页 -->
+                                            <li th:if="${products.getTotalPages()} gt 0">
+                                                <a th:href="${urlBuilder.replaceQueryParam('pageNum',products.getTotalPages() - 1).build().toUriString()}"
+                                                   th:text="尾页"></a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!-- END RECENT PURCHASES -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- END MAIN CONTENT -->
+</div>
+<!-- END MAIN -->
+<!-- FOOTER -->
+<div th:replace="~{commons/commons::footer}"></div>
+<!-- END FOOTER -->
+</div>
+<!-- END WRAPPER -->
+<!-- Javascript -->
+<script src="/assets/vendor/jquery/jquery.min.js"></script>
+<script src="/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+<script src="/assets/vendor/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+<script src="/assets/vendor/jquery.easy-pie-chart/jquery.easypiechart.min.js"></script>
+<script src="/assets/vendor/chartist/js/chartist.min.js"></script>
+<script src="/assets/scripts/klorofil-common.js"></script>
+<script src="/assets/scripts/xxx_admin.js"></script>
+
+</body>
+</html>
