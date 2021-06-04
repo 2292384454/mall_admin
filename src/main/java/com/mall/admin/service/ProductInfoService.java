@@ -18,7 +18,7 @@ public interface ProductInfoService {
     /**
      * 按条件分页显示商品
      */
-    public Page<ProductInfo> findProductInfo(Specification<ProductInfo> specification, int pageNum);
+    Page<ProductInfo> findProductInfo(Specification<ProductInfo> specification, int pageNum);
 
     /**
      * 商品计数
@@ -44,10 +44,5 @@ public interface ProductInfoService {
      * 保存商品到数据库
      */
     void save(ProductInfo productInfo);
-
-    /**
-     * 删除商品
-     */
-    void deleteById(Long id);
 
 }

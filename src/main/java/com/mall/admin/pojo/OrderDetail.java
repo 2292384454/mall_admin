@@ -1,5 +1,6 @@
 package com.mall.admin.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -19,37 +20,9 @@ public class OrderDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long oid;
-
-    private Long pid;
+    @OneToOne
+    @JoinColumn(name = "pid")
+    private ProductInfo productInfo;
 
     private int num;
-
-    /**
-     * 获取订单信息
-     */
-    public OrderInfo getOi() {
-        return null;
-    }
-
-    /**
-     * 获取产品信息
-     */
-    public ProductInfo getPi() {
-        return null;
-    }
-
-    /**
-     * 获取产品价格
-     */
-    public double getPrice() {
-        return 0.0;
-    }
-
-    /**
-     * 获取订单总价
-     */
-    public double getTotalPrice() {
-        return 0.0;
-    }
 }

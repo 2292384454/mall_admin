@@ -1,5 +1,5 @@
 <!doctype html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html"
       lang="en">
 
 <head>
@@ -24,6 +24,14 @@
 </head>
 
 <body>
+<script>
+    function confirmSubmit() {
+        if (confirm("取消后无法恢复，确认取消订单？")) {
+            document.getElementById("off_form").submit();
+        }
+        return false;
+    }
+</script>
 <!-- WRAPPER -->
 <div id="wrapper">
     <!-- NAVBAR -->
@@ -42,77 +50,155 @@
                         <!-- RECENT PURCHASES -->
                         <div class="panel">
                             <div class="panel-heading">
-                                <h3 class="panel-title">商品列表</h3>
+                                <h3 class="panel-title">订单列表</h3>
                             </div>
                             <div class="panel-body no-padding">
-                                <table class="table table-striped">
-                                    <thead>
-                                    <tr>
-                                        <th>id</th>
-                                        <th>所有者</th>
-                                        <th>status</th>
-                                        <th>订单创建时间</th>
-                                        <th>订单价值</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each=" order : ${orders}">
-                                        <th scope="row" th:text="${order.getId()}"></th>
-                                        <td th:text="${order.getUserInfo()}"></td>
-                                        <td th:text="${order.getStatus()}"></td>
-                                        <td th:text="${order.getOrderTime()}"></td>
-                                        <td th:text="${order.getOrderPrice()}"></td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                                <div class="modal-footer no-margin-top">
-                                    <ul class="pagination pull-right no-margin">
-                                        <!-- 首页 -->
-                                        <li th:if="${orders.getTotalPages()} gt 0">
-                                            <a th:href="'/admin/product_admin/order_list?pageNum=0'">首页</a>
-                                        </li>
-                                        <!-- 上一页 -->
-                                        <li th:if="${orders.hasPrevious()}">
-                                            <a th:href="'/admin/product_admin/order_list?pageNum=' + ${orders.previousPageable().getPageNumber()}"
-                                               th:text="上一页"></a>
-                                        </li>
-                                        <!-- 中间页 -->
-                                        <li th:if="${orders.getTotalPages()} gt 0"
-                                            th:each="pageNum:${#numbers.sequence(0, orders.getTotalPages() - 1)}">
-                                            <a th:href="'/admin/product_admin/order_list?pageNum=' + ${pageNum}"
-                                               th:text="${pageNum + 1}"
-                                               th:if="${pageNum ne orders.pageable.getPageNumber()}"></a>
-                                            <a th:href="'/admin/product_admin/order_list?pageNum=' + ${pageNum}"
-                                               th:text="${pageNum + 1}"
-                                               th:if="${pageNum eq orders.pageable.getPageNumber()}"
-                                               th:style="'font-weight:bold;background: #6faed9;'"></a>
-                                        </li>
-                                        <!-- 下一页 -->
-                                        <li th:if="${orders.hasNext()}">
-                                            <a th:href="'/admin/product_admin/order_list?pageNum=' + ${orders.nextPageable().getPageNumber()}"
-                                               th:text="下一页"></a>
-                                        </li>
-                                        <!-- 尾页 -->
-                                        <li th:if="${orders.getTotalPages()} gt 0">
-                                            <a th:href="'/admin/product_admin/order_list?pageNum=' + ${orders.getTotalPages() - 1}">尾页</a>
-                                        </li>
+                                <form method="GET" class="navbar-form navbar-left"
+                                      th:action="@{/admin/order_admin/order_list}">
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">订单编号</span>
+                                        <input type="text" name="id" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('id')}">
+                                    </div>
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">客户名称</span>
+                                        <input type="text" name="clientname" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('clientname')}">
+                                    </div>
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">订单状态</span>
+                                        <select name="status" class="form-control">
+                                            <option>全部</option>
+                                            <option th:each="status,stat : ${order_status}" th:text="${status}"
+                                                    th:value="${stat.index}"
+                                                    th:selected="${#httpServletRequest.getParameter('status')} eq ${stat.index}"></option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">订单时间</span>
+                                        <input type="text" name="from" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('from')}"
+                                               placeholder="yyyy-MM-dd HH:mm:ss">
+                                        <span class="input-group-addon">~</span>
+                                        <input type="text" name="to" class="form-control"
+                                               th:value="${#httpServletRequest.getParameter('to')}"
+                                               placeholder="yyyy-MM-dd HH:mm:ss">
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>Search
+                                    </button>
+                                </form>
+                            </div>
+                            <div class="panel-body no-padding">
+                                <form id="cancel_form" method="POST" th:action="@{order_list}">
+                                    <!-- 取消订单按钮 -->
+                                    <button class="btn btn-primary btn-xs" onclick="return confirmSubmit()">
+                                        <i class="lnr lnr-file-add"></i>取消
+                                    </button>
+                                    <!-- 取消订单成功提示信息 -->
+                                    <div class="panel-body no-padding form-inline"
+                                         th:if="${#httpServletRequest.getParameter('cancel_count')!=null}">
+                                        <div class="alert alert-info alert-dismissible" role="alert"
+                                             th:with="count=${#httpServletRequest.getParameter('cancel_count')}">
+                                            <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                            <i class="fa fa-info-circle"
+                                               th:text="${count+' 个订单取消成功'}"></i>
+                                        </div>
+                                    </div>
+                                    <!-- 未选中要取消的订单提示信息-->
+                                    <div class="panel-body no-padding form-inline"
+                                         th:if="${#httpServletRequest.getParameter('error')!=null}">
+                                        <div class="alert alert-danger alert-dismissible" role="alert">
+                                            <button type="button" class="close" data-dismiss="alert"
+                                                    aria-label="Close"><span
+                                                    aria-hidden="true">&times;</span></button>
+                                            <i class="fa fa-info-circle">请选择要取消的订单</i>
+                                        </div>
+                                    </div>
+                                    <br>
+                                    <table class="table table-striped">
+                                        <thead>
+                                        <tr>
+                                            <th>选择</th>
+                                            <th>id</th>
+                                            <th>客户账号</th>
+                                            <th>订单状态</th>
+                                            <th>订单创建时间</th>
+                                            <th>订单总价</th>
+                                            <th>订单详情</th>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        <tr th:each=" order : ${orders}">
+                                            <th>
+                                                <label class="fancy-checkbox">
+                                                    <input type="checkbox" name="cancelIds"
+                                                           th:value="${order.getId()}">
+                                                    <span></span>
+                                                </label>
+                                            </th>
+                                            <th scope="row" th:text="${order.getId()}"></th>
+                                            <td th:text="${order.getUserInfo()}"></td>
+                                            <td th:text="${order_status.get(order.getStatus())}"></td>
+                                            <td th:text="${order.getOrderTime()}"></td>
+                                            <td th:text="${order.getOrderPrice()}"></td>
+                                            <td>
+                                                <a th:href="'/admin/order_admin/order_detail?order_id='+${order.getId()}"
+                                                   th:text="详情"></a>
+                                            </td>
+                                        </tr>
+                                        </tbody>
+                                    </table>
+                                </form>
+                            </div>
+                            <div class="modal-footer no-margin-top">
+                                <ul class="pagination pull-right no-margin">
+                                    <!-- 首页 -->
+                                    <li th:if="${orders.getTotalPages()} gt 0">
+                                        <a th:href="'/admin/order_admin/order_list?pageNum=0'">首页</a>
+                                    </li>
+                                    <!-- 上一页 -->
+                                    <li th:if="${orders.hasPrevious()}">
+                                        <a th:href="'/admin/order_admin/order_list?pageNum=' + ${orders.previousPageable().getPageNumber()}"
+                                           th:text="上一页"></a>
+                                    </li>
+                                    <!-- 中间页 -->
+                                    <li th:if="${orders.getTotalPages()} gt 0"
+                                        th:each="pageNum:${#numbers.sequence(0, orders.getTotalPages() - 1)}">
+                                        <a th:href="'/admin/order_admin/order_list?pageNum=' + ${pageNum}"
+                                           th:text="${pageNum + 1}"
+                                           th:if="${pageNum ne orders.pageable.getPageNumber()}"></a>
+                                        <a th:href="'/admin/order_admin/order_list?pageNum=' + ${pageNum}"
+                                           th:text="${pageNum + 1}"
+                                           th:if="${pageNum eq orders.pageable.getPageNumber()}"
+                                           th:style="'font-weight:bold;background: #6faed9;'"></a>
+                                    </li>
+                                    <!-- 下一页 -->
+                                    <li th:if="${orders.hasNext()}">
+                                        <a th:href="'/admin/order_admin/order_list?pageNum=' + ${orders.nextPageable().getPageNumber()}"
+                                           th:text="下一页"></a>
+                                    </li>
+                                    <!-- 尾页 -->
+                                    <li th:if="${orders.getTotalPages()} gt 0">
+                                        <a th:href="'/admin/order_admin/order_list?pageNum=' + ${orders.getTotalPages() - 1}">尾页</a>
+                                    </li>
 
-                                    </ul>
-                                </div>
+                                </ul>
                             </div>
                         </div>
-                        <!-- END RECENT PURCHASES -->
                     </div>
+                    <!-- END RECENT PURCHASES -->
                 </div>
             </div>
         </div>
-        <!-- END MAIN CONTENT -->
     </div>
-    <!-- END MAIN -->
-    <!-- FOOTER -->
-    <div th:replace="~{commons/commons::footer}"></div>
-    <!-- END FOOTER -->
+    <!-- END MAIN CONTENT -->
 </div>
+<!-- END MAIN -->
+<!-- FOOTER -->
+<div th:replace="~{commons/commons::footer}"></div>
+<!-- END FOOTER -->
 <!-- END WRAPPER -->
 <!-- Javascript -->
 <script src="/assets/vendor/jquery/jquery.min.js"></script>

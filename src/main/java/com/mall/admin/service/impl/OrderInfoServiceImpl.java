@@ -5,12 +5,19 @@ import com.mall.admin.dao.OrderInfoRepository;
 import com.mall.admin.pojo.OrderDetail;
 import com.mall.admin.pojo.OrderInfo;
 import com.mall.admin.pojo.Pager;
+import com.mall.admin.pojo.ProductInfo;
 import com.mall.admin.service.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 描述.
@@ -33,9 +40,11 @@ public class OrderInfoServiceImpl implements OrderInfoService {
     }
 
     @Override
-    public Page<OrderInfo> findOrderInfo(int pageNum) {
-        Pageable pageable = PageRequest.of(0, pager.getPerPageRows());
-        return orderInfoRepository.findAll(pageable);
+    public Page<OrderInfo> findOrderInfo(Specification<OrderInfo> specification, int pageNum) {
+        List<Sort.Order> orders = new ArrayList<>();
+        orders.add(new Sort.Order(Sort.Direction.ASC, "id"));
+        Pageable pageable = PageRequest.of(pageNum, pager.getPerPageRows(), Sort.by(orders));
+        return orderInfoRepository.findAll(specification, pageable);
     }
 
     @Override
@@ -46,6 +55,12 @@ public class OrderInfoServiceImpl implements OrderInfoService {
     @Override
     public Long addOrderInfo(OrderInfo oi) {
         return orderInfoRepository.save(oi).getId();
+    }
+
+    @Override
+    @Transactional
+    public void modifyStatus(Long id, int flag) {
+        orderInfoRepository.modifyStatus(id, flag);
     }
 
     @Override

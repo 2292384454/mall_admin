@@ -28,5 +28,5 @@ public interface TypeService {
     /**
      * 更新商品类型
      */
-    void updateType(Type type);
+    void addType(String typeName);
 }

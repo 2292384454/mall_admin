@@ -46,13 +46,12 @@ public class TypeServiceImpl implements TypeService {
     }
 
     @Override
-    public void updateType(Type type) {
-        //TODO: 待验证
+    public void addType(String typeName) {
         /*
           save方法：
           若db中这个id对应的字段不存在，则插入
           若db中这个id对应的字段存在，则更新
          */
-        typeRepository.save(type);
+        typeRepository.save(new Type(typeName));
     }
 }

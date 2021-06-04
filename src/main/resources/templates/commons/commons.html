@@ -64,7 +64,9 @@
                     <div id="order_management">
                         <ul class="nav">
                             <li><a th:href="@{/admin/order_admin/order_list}" class="">查询订单</a></li>
-                            <li><a th:href="login.html" class="">创建订单</a></li>
+                            <!-- 《SSM框架技术精讲与整合案例》中赋予了管理员创建订单的权限。
+                                 但是我觉得管理员不应该有这个权限，订单只能由用户创建才对。（其实就是懒得做了） -->
+                            <!-- <li><a th:href="login.html" class="">创建订单</a></li> -->
                         </ul>
                     </div>
                 </li>

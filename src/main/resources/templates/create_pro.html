@@ -46,7 +46,7 @@
                             </div>
                             <div class="panel-body">
                                 <form method="POST" class="navbar-form navbar-left" enctype="multipart/form-data"
-                                      th:object="${product}" th:action="@{/admin/product_admin/create_pro}">
+                                      th:object="${product}" th:action="@{create_pro}">
                                     <div class="input-group" style="margin: 10px">
                                         <span class="input-group-addon">商品状态</span>
                                         <select th:field="*{status}" class="form-control">
@@ -126,9 +126,8 @@
                                         <input type="file" name="file" class="form-control">
                                     </div>
                                     <span class="label label-danger"
-                                          th:text="${product.getPic()}"
-                                          th:if="${error != null}">请选择商品图片</span>
-                                    <img th:if="${product.getPic()!=null}" th:src="@{'/'+${product.getPic()}}"
+                                          th:text="${error}">请选择商品图片</span>
+                                    <img th:if="${product.getPic()}!=null" th:src="@{'/'+${product.getPic()}}"
                                          width="200px" alt="picture">
                                     <br>
                                     <button type="submit" class="btn btn-primary"><i class="lnr lnr-cloud-upload"></i>保存
@@ -150,7 +149,6 @@
 <!-- FOOTER -->
 <div th:replace="~{commons/commons::footer}"></div>
 <!-- END FOOTER -->
-</div>
 <!-- END WRAPPER -->
 <!-- Javascript -->
 <script src="/assets/vendor/jquery/jquery.min.js"></script>

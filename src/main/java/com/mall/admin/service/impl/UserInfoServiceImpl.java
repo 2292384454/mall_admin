@@ -27,7 +27,6 @@ import java.util.Optional;
  * @author KevinHwang
  */
 @Service
-@NoArgsConstructor(force = true)
 public class UserInfoServiceImpl implements UserInfoService {
     private final UserInfoRepository userInfoRepository;
     private final Pager pager;

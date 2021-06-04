@@ -2,7 +2,9 @@ package com.mall.admin.service;
 
 import com.mall.admin.pojo.OrderDetail;
 import com.mall.admin.pojo.OrderInfo;
+import com.mall.admin.pojo.ProductInfo;
 import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 
 /**
  * 描述.
@@ -13,10 +15,9 @@ import org.springframework.data.domain.Page;
  */
 public interface OrderInfoService {
     /**
-     * 分页显示订单
-     * @param pageNum
+     * 按条件分页显示订单
      */
-    Page<OrderInfo> findOrderInfo(int pageNum);
+    Page<OrderInfo> findOrderInfo(Specification<OrderInfo> specification, int pageNum);
 
     /**
      * 订单计数
@@ -27,6 +28,12 @@ public interface OrderInfoService {
      * 添加订单主表
      */
     Long addOrderInfo(OrderInfo oi);
+
+
+    /**
+     * 更新订单状态
+     */
+    void modifyStatus(Long id, int flag);
 
     /**
      * 添加订单明细

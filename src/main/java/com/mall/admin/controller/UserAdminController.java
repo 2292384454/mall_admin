@@ -1,6 +1,7 @@
 package com.mall.admin.controller;
 
 import com.mall.admin.pojo.AdminInfo;
+import com.mall.admin.pojo.GlobalVariables;
 import com.mall.admin.pojo.UserInfo;
 import com.mall.admin.service.UserInfoService;
 import lombok.extern.log4j.Log4j2;
@@ -89,6 +90,7 @@ public class UserAdminController {
         model.addAttribute("adminInfo", adminInfo);
         model.addAttribute("users", users);
         model.addAttribute("pageNum", pageNum);
+        model.addAttribute("user_status", GlobalVariables.userStatus);
         return "user_list";
     }
 }

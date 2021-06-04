@@ -10,8 +10,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpRequest;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ClassUtils;
@@ -76,6 +74,8 @@ public class ProductAdminController {
         String fromStr = request.getParameter("from");
         //商品价格to
         String toStr = request.getParameter("to");
+        //商品状态
+        String statusStr = request.getParameter("status");
 
         //实现条件查询，组合查询
         Specification<ProductInfo> specification = (root, criteriaQuery, criteriaBuilder) -> {
@@ -125,6 +125,15 @@ public class ProductAdminController {
                 Predicate predicate = criteriaBuilder.lessThanOrEqualTo(root.get("price").as(Double.class), to);
                 predicates.add(predicate);
             }
+            if (StringUtils.isNotBlank(statusStr)) {
+                try {
+                    int status = Integer.parseInt(statusStr);
+                    //精确查询，equal
+                    Predicate predicate = criteriaBuilder.equal(root.get("status").as(Integer.class), status);
+                    predicates.add(predicate);
+                } catch (Exception ignored) {
+                }
+            }
 
             //判断是否有断言，如果没有则返回空，不进行条件组合
             if (predicates.size() == 0) {
@@ -149,32 +158,41 @@ public class ProductAdminController {
      */
     @PostMapping("/product_list")
     public String postProductList(HttpServletRequest request) {
-        //获取要删除的商品id
-        String removeIds[] = request.getParameterValues("removeIds");
-        if (removeIds == null || removeIds.length == 0) {
+        //获取要下架的商品id
+        String[] offIds = request.getParameterValues("offIds");
+        if (offIds == null || offIds.length == 0) {
             return "redirect:/admin/product_admin/product_list?error=no_product_selected";
         }
         //获取操作员，日志记录用
         AdminInfo adminInfo = (AdminInfo) request.getSession().getAttribute("adminInfo");
-        //逐条删除
-        for (String idStr : removeIds) {
+        //逐条下架
+        for (String idStr : offIds) {
             Long id = Long.parseLong(idStr);
+            productInfoService.modifyStatus(id, 0);
             ProductInfo productInfo = productInfoService.getProductInfoById(id);
-            productInfoService.deleteById(id);
-            log.info(adminInfo.getUsername() + " 删除了商品 " + productInfo);
+            log.info(adminInfo.getUsername() + " 下架了商品 " + productInfo);
         }
-        return "redirect:/admin/product_admin/product_list?delete_count=" + removeIds.length;
+        return "redirect:/admin/product_admin/product_list?off_count=" + offIds.length;
     }
 
     /**
-     * 处理对/type_list的请求
+     * 处理对/type_list的GET请求
      */
-    @RequestMapping("/type_list")
-    public String requestTypeList(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum) {
+    @GetMapping("/type_list")
+    public String getTypeList(Model model, @RequestParam(value = "pageNum", defaultValue = "0") int pageNum) {
         Page<Type> types = typeService.findType(pageNum);
         model.addAttribute("types", types);
         model.addAttribute("pageNum", pageNum);
         return "type_list";
+    }
+
+    /**
+     * 处理对/type_list的GET请求
+     */
+    @PostMapping("/type_list")
+    public String postTypeList(@RequestParam(value = "type_name") String typeName) {
+        typeService.addType(typeName);
+        return "redirect:/admin/product_admin/type_list";
     }
 
 
@@ -190,23 +208,26 @@ public class ProductAdminController {
     public String postCreatePro(Model model, @RequestParam("file") MultipartFile file,
                                 @Valid @ModelAttribute("product") ProductInfo product, Errors errors,
                                 SessionStatus sessionStatus, HttpServletRequest request) throws IOException {
+        //存储图片的路径是相对这个路径的
+        File staticFolder = new File(ClassUtils.getDefaultClassLoader().getResource("").getPath(), "static");
         //服务器端存放商品图片的文件夹路径，不存在就创建
-        File folder = new File(ClassUtils.getDefaultClassLoader().getResource("").getPath(), "static/product/img");
+        File folder = new File(staticFolder, "product/img");
         if (!folder.exists() && !folder.isDirectory()) {
             folder.mkdirs();
         }
         //如果 用户没选择图片 && 之前也没有图片
         boolean noPic = file.isEmpty();
-        if (product.getPic() != null) {
-            File oldFile = new File(ClassUtils.getDefaultClassLoader().getResource("").getPath(), product.getPic());
-            noPic = !noPic && oldFile.exists();
+        if (product.getPic() != null && product.getPic().length() > 0) {
+            File oldFile = new File(staticFolder, product.getPic());
+            noPic = noPic && (!oldFile.exists());
         }
         if (errors.hasErrors() || noPic) {
             if (product.getType() == null) {
+                //防止前端因为type==null取不到type.id报错
                 product.setType(new Type());
             }
             if (noPic) {
-                model.addAttribute("error", "empty_img");
+                model.addAttribute("error", "请选择商品图片");
             }
             return "create_pro";
         }

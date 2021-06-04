@@ -63,15 +63,15 @@
                                         <thead>
                                         <tr>
                                             <th>id</th>
-                                            <th>userName</th>
-                                            <th>passWord</th>
-                                            <th>real_name</th>
-                                            <th>sex</th>
-                                            <th>address</th>
-                                            <th>regDate</th>
-                                            <th>status</th>
-                                            <th>disable</th>
-                                            <th>enable</th>
+                                            <th>用户名</th>
+                                            <th>密码</th>
+                                            <th>姓名</th>
+                                            <th>性别</th>
+                                            <th>地址</th>
+                                            <th>注册日期</th>
+                                            <th>状态</th>
+                                            <th>启用</th>
+                                            <th>停用</th>
                                         </tr>
                                         </thead>
                                         <tbody>
@@ -83,14 +83,14 @@
                                             <td th:text="${user.getSex()}"></td>
                                             <td th:text="${user.getAddress()}"></td>
                                             <td th:text="${user.getRegDate()}"></td>
-                                            <td th:text="${user.getStatus()}"></td>
+                                            <td th:text="${user_status.get(user.getStatus())}"></td>
                                             <td>
                                                 <a th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-                                                   th:href="${urlBuilder.replaceQueryParam('enableId').replaceQueryParam('disableId',user.getId()).build().toUriString()}">disable</a>
+                                                   th:href="${urlBuilder.replaceQueryParam('enableId').replaceQueryParam('disableId',user.getId()).build().toUriString()}">停用</a>
                                             </td>
                                             <td>
                                                 <a th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-                                                   th:href="${urlBuilder.replaceQueryParam('disableId').replaceQueryParam('enableId',user.getId()).build().toUriString()}">enable</a>
+                                                   th:href="${urlBuilder.replaceQueryParam('disableId').replaceQueryParam('enableId',user.getId()).build().toUriString()}">启用</a>
                                             </td>
                                         </tr>
                                         </tbody>

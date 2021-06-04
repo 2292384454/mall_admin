@@ -3,6 +3,7 @@ package com.mall.admin.dao;
 import com.mall.admin.pojo.ProductInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public interface ProductInfoRepository extends JpaRepository<ProductInfo, Long>,
     /**
      * 更新商品状态
      */
+    @Modifying
     @Query("UPDATE ProductInfo p set p.status=?2 WHERE p.id=?1")
     void modifyStatus(Long id, int flag);
 }

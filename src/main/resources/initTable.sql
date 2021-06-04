@@ -51,7 +51,7 @@ create table if not exists order_info
 (
     id          bigint primary key auto_increment not null, #订单id标识，主键，自增
     uid         bigint                            not null, #客户id（外键）
-    status      varchar(16)                       not null, #订单状态
+    status      int(4)                            not null, #订单状态
     order_time  datetime                          not null, #订单下单时间
     order_price decimal(19, 4)                    not null  #订单金额
 );

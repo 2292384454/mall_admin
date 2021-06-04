@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class ProductInfoInfoServiceImpl implements ProductInfoService {
     }
 
     @Override
+    @Transactional
     public void modifyStatus(Long id, int flag) {
         productInfoRepository.modifyStatus(id, flag);
     }
@@ -65,11 +67,4 @@ public class ProductInfoInfoServiceImpl implements ProductInfoService {
     public void save(ProductInfo productInfo) {
         productInfoRepository.save(productInfo);
     }
-
-    @Override
-    public void deleteById(Long id) {
-        productInfoRepository.deleteById(id);
-    }
-
-
 }
