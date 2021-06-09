@@ -1,6 +1,6 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.dao.TypeRepository;
+import com.mall.admin.repository.TypeRepository;
 import com.mall.admin.pojo.Pager;
 import com.mall.admin.pojo.Type;
 import com.mall.admin.service.TypeService;

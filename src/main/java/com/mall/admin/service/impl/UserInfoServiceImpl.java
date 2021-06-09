@@ -1,6 +1,6 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.dao.UserInfoRepository;
+import com.mall.admin.repository.UserInfoRepository;
 import com.mall.admin.pojo.Pager;
 import com.mall.admin.pojo.UserInfo;
 import com.mall.admin.service.UserInfoService;

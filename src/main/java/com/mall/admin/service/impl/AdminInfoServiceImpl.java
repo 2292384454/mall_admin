@@ -1,6 +1,6 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.dao.AdminInfoRepository;
+import com.mall.admin.repository.AdminInfoRepository;
 import com.mall.admin.pojo.AdminInfo;
 import com.mall.admin.service.AdminInfoService;
 import org.springframework.beans.factory.annotation.Autowired;

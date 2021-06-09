@@ -1,6 +1,6 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.dao.ProductInfoRepository;
+import com.mall.admin.repository.ProductInfoRepository;
 import com.mall.admin.pojo.Pager;
 import com.mall.admin.pojo.ProductInfo;
 import com.mall.admin.service.ProductInfoService;

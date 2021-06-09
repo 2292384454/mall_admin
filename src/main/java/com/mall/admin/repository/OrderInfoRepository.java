@@ -1,4 +1,4 @@
-package com.mall.admin.dao;
+package com.mall.admin.repository;
 
 import com.mall.admin.pojo.OrderInfo;
 import org.springframework.data.jpa.repository.JpaRepository;

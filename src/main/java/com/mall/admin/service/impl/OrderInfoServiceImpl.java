@@ -1,7 +1,7 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.dao.OrderDetailRepository;
-import com.mall.admin.dao.OrderInfoRepository;
+import com.mall.admin.repository.OrderDetailRepository;
+import com.mall.admin.repository.OrderInfoRepository;
 import com.mall.admin.pojo.OrderDetail;
 import com.mall.admin.pojo.OrderInfo;
 import com.mall.admin.pojo.Pager;
