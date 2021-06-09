@@ -2,7 +2,9 @@
 com:
   mall:
     admin:
+      #每页显示的元素条数
       per-page-rows: 10
+      #自定义静态资源路径，主要用来存放商品图片
       staticPath: D:\Codes\mall\static\
 
 spring:
