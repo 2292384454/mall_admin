@@ -2,7 +2,6 @@ package com.mall.admin.service;
 
 import com.mall.admin.pojo.OrderDetail;
 import com.mall.admin.pojo.OrderInfo;
-import com.mall.admin.pojo.ProductInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 

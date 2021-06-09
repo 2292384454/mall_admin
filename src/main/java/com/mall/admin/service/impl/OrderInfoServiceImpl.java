@@ -5,7 +5,6 @@ import com.mall.admin.dao.OrderInfoRepository;
 import com.mall.admin.pojo.OrderDetail;
 import com.mall.admin.pojo.OrderInfo;
 import com.mall.admin.pojo.Pager;
-import com.mall.admin.pojo.ProductInfo;
 import com.mall.admin.service.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

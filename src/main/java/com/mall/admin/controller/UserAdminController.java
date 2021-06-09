@@ -2,7 +2,6 @@ package com.mall.admin.controller;
 
 import com.mall.admin.pojo.AdminInfo;
 import com.mall.admin.pojo.GlobalVariables;
-import com.mall.admin.pojo.OrderInfo;
 import com.mall.admin.pojo.UserInfo;
 import com.mall.admin.service.UserInfoService;
 import lombok.extern.log4j.Log4j2;

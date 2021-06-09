@@ -3,7 +3,6 @@ package com.mall.admin.service;
 import com.mall.admin.pojo.ProductInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.security.core.parameters.P;
 
 import java.util.List;
 
