@@ -1,8 +1,8 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.repository.TypeRepository;
-import com.mall.admin.pojo.Pager;
+import com.mall.admin.pojo.OtherConfig;
 import com.mall.admin.pojo.Type;
+import com.mall.admin.repository.TypeRepository;
 import com.mall.admin.service.TypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,19 +24,19 @@ import java.util.List;
 @Service
 public class TypeServiceImpl implements TypeService {
     private final TypeRepository typeRepository;
-    private final Pager pager;
+    private final OtherConfig otherConfig;
 
     @Autowired
-    public TypeServiceImpl(TypeRepository typeRepository, Pager pager) {
+    public TypeServiceImpl(TypeRepository typeRepository, OtherConfig otherConfig) {
         this.typeRepository = typeRepository;
-        this.pager = pager;
+        this.otherConfig = otherConfig;
     }
 
     @Override
     public Page<Type> findType(int pageNum) {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, "id"));
-        Pageable pageable = PageRequest.of(0, pager.getPerPageRows(), Sort.by(orders));
+        Pageable pageable = PageRequest.of(0, otherConfig.getPerPageRows(), Sort.by(orders));
         return typeRepository.findAll(pageable);
     }
 

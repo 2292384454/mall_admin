@@ -1,8 +1,8 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.repository.UserInfoRepository;
-import com.mall.admin.pojo.Pager;
+import com.mall.admin.pojo.OtherConfig;
 import com.mall.admin.pojo.UserInfo;
+import com.mall.admin.repository.UserInfoRepository;
 import com.mall.admin.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,12 +28,12 @@ import java.util.Optional;
 @Service
 public class UserInfoServiceImpl implements UserInfoService {
     private final UserInfoRepository userInfoRepository;
-    private final Pager pager;
+    private final OtherConfig otherConfig;
 
     @Autowired
-    public UserInfoServiceImpl(UserInfoRepository userInfoRepository, Pager pager) {
+    public UserInfoServiceImpl(UserInfoRepository userInfoRepository, OtherConfig otherConfig) {
         this.userInfoRepository = userInfoRepository;
-        this.pager = pager;
+        this.otherConfig = otherConfig;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     public Page<UserInfo> findUserInfo(int pageNum) {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, "id"));
-        Pageable pageable = PageRequest.of(pageNum, pager.getPerPageRows(), Sort.by(orders));
+        Pageable pageable = PageRequest.of(pageNum, otherConfig.getPerPageRows(), Sort.by(orders));
         return userInfoRepository.findAll(pageable);
     }
 
@@ -62,7 +62,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     public Page<UserInfo> findByCondition(Specification<UserInfo> specification, int pageNum) {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, "id"));
-        Pageable pageable = PageRequest.of(pageNum, pager.getPerPageRows(), Sort.by(orders));
+        Pageable pageable = PageRequest.of(pageNum, otherConfig.getPerPageRows(), Sort.by(orders));
         return userInfoRepository.findAll(specification, pageable);
     }
 

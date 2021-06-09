@@ -3,7 +3,9 @@ package com.mall.admin.pojo;
 import lombok.Data;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * 封装商品信息.

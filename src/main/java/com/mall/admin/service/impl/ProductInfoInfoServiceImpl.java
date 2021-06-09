@@ -1,8 +1,8 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.repository.ProductInfoRepository;
-import com.mall.admin.pojo.Pager;
+import com.mall.admin.pojo.OtherConfig;
 import com.mall.admin.pojo.ProductInfo;
+import com.mall.admin.repository.ProductInfoRepository;
 import com.mall.admin.service.ProductInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,19 +26,19 @@ import java.util.List;
 @Service
 public class ProductInfoInfoServiceImpl implements ProductInfoService {
     private final ProductInfoRepository productInfoRepository;
-    private final Pager pager;
+    private final OtherConfig otherConfig;
 
     @Autowired
-    public ProductInfoInfoServiceImpl(ProductInfoRepository productInfoRepository, Pager pager) {
+    public ProductInfoInfoServiceImpl(ProductInfoRepository productInfoRepository, OtherConfig otherConfig) {
         this.productInfoRepository = productInfoRepository;
-        this.pager = pager;
+        this.otherConfig = otherConfig;
     }
 
     @Override
     public Page<ProductInfo> findProductInfo(Specification<ProductInfo> specification, int pageNum) {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, "id"));
-        Pageable pageable = PageRequest.of(pageNum, pager.getPerPageRows(), Sort.by(orders));
+        Pageable pageable = PageRequest.of(pageNum, otherConfig.getPerPageRows(), Sort.by(orders));
         return productInfoRepository.findAll(specification, pageable);
     }
 

@@ -1,10 +1,10 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.repository.OrderDetailRepository;
-import com.mall.admin.repository.OrderInfoRepository;
 import com.mall.admin.pojo.OrderDetail;
 import com.mall.admin.pojo.OrderInfo;
-import com.mall.admin.pojo.Pager;
+import com.mall.admin.pojo.OtherConfig;
+import com.mall.admin.repository.OrderDetailRepository;
+import com.mall.admin.repository.OrderInfoRepository;
 import com.mall.admin.service.OrderInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -29,20 +29,20 @@ import java.util.List;
 public class OrderInfoServiceImpl implements OrderInfoService {
     private final OrderInfoRepository orderInfoRepository;
     private final OrderDetailRepository orderDetailRepository;
-    private final Pager pager;
+    private final OtherConfig otherConfig;
 
     @Autowired
-    public OrderInfoServiceImpl(OrderInfoRepository orderInfoRepository, OrderDetailRepository orderDetailRepository, Pager pager) {
+    public OrderInfoServiceImpl(OrderInfoRepository orderInfoRepository, OrderDetailRepository orderDetailRepository, OtherConfig otherConfig) {
         this.orderInfoRepository = orderInfoRepository;
         this.orderDetailRepository = orderDetailRepository;
-        this.pager = pager;
+        this.otherConfig = otherConfig;
     }
 
     @Override
     public Page<OrderInfo> findOrderInfo(Specification<OrderInfo> specification, int pageNum) {
         List<Sort.Order> orders = new ArrayList<>();
         orders.add(new Sort.Order(Sort.Direction.ASC, "id"));
-        Pageable pageable = PageRequest.of(pageNum, pager.getPerPageRows(), Sort.by(orders));
+        Pageable pageable = PageRequest.of(pageNum, otherConfig.getPerPageRows(), Sort.by(orders));
         return orderInfoRepository.findAll(specification, pageable);
     }
 

@@ -1,7 +1,7 @@
 package com.mall.admin.service.impl;
 
-import com.mall.admin.repository.AdminInfoRepository;
 import com.mall.admin.pojo.AdminInfo;
+import com.mall.admin.repository.AdminInfoRepository;
 import com.mall.admin.service.AdminInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

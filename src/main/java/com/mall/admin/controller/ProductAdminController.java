@@ -1,6 +1,7 @@
 package com.mall.admin.controller;
 
 import com.mall.admin.pojo.AdminInfo;
+import com.mall.admin.pojo.OtherConfig;
 import com.mall.admin.pojo.ProductInfo;
 import com.mall.admin.pojo.Type;
 import com.mall.admin.service.ProductInfoService;
@@ -12,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.ClassUtils;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -25,7 +25,10 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Random;
 
 /**
  * 描述.
@@ -39,11 +42,13 @@ import java.util.*;
 @SessionAttributes(value = {"product", "typeList"})
 @Log4j2
 public class ProductAdminController {
+    private final OtherConfig otherConfig;
     private final ProductInfoService productInfoService;
     private final TypeService typeService;
 
     @Autowired
-    public ProductAdminController(ProductInfoService productInfoService, TypeService typeService) {
+    public ProductAdminController(OtherConfig otherConfig, ProductInfoService productInfoService, TypeService typeService) {
+        this.otherConfig = otherConfig;
         this.productInfoService = productInfoService;
         this.typeService = typeService;
     }
@@ -209,9 +214,9 @@ public class ProductAdminController {
                                 @Valid @ModelAttribute("product") ProductInfo product, Errors errors,
                                 SessionStatus sessionStatus, HttpServletRequest request) throws IOException {
         //存储图片的路径是相对这个路径的
-        File staticFolder = new File(ClassUtils.getDefaultClassLoader().getResource("").getPath(), "static");
+        File staticFolder = new File(otherConfig.getStaticPath());
         //服务器端存放商品图片的文件夹路径，不存在就创建
-        File folder = new File(staticFolder, "product/img");
+        File folder = new File(staticFolder, "images/products");
         if (!folder.exists() && !folder.isDirectory()) {
             folder.mkdirs();
         }
@@ -249,7 +254,7 @@ public class ProductAdminController {
             } while (targetFile.exists());
             //将上传文件写到服务器上指定的文件
             FileCopyUtils.copy(file.getInputStream(), new FileOutputStream(targetFile));
-            product.setPic("product/img/" + fileName);
+            product.setPic("images/products/" + fileName);
         }
         productInfoService.save(product);
         log.info(adminInfo.getUsername() + " 添加（修改）商品 " + product);
