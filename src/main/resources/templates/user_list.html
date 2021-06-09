@@ -45,56 +45,69 @@
                                 <h3 class="panel-title">用户列表</h3>
                             </div>
                             <div class="panel-body no-padding">
-                                <form class="navbar-form navbar-left" th:action="@{user_list(pageNum=${pageNum})}">
-                                    <div class="input-group">
-                                    <span>
+                                <form method="GET" class="navbar-form navbar-left" th:action="@{user_list}">
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">用户名</span>
                                         <input type="text" name="keyword" value="" class="form-control"
                                                placeholder="Search by username..."
                                                th:value="${#httpServletRequest.getParameter('keyword')}">
-                                    </span>
-                                        <span class="input-group-btn">
-                                            <button type="submit" class="btn btn-primary"><i
-                                                    class="fa fa-search"></i>Search</button>
-                                    </span>
                                     </div>
+                                    <div class="input-group" style="margin: 10px">
+                                        <span class="input-group-addon">用户状态</span>
+                                        <select name="status" class="form-control">
+                                            <option>全部</option>
+                                            <option th:text="启用" value="1"
+                                                    th:selected="${#httpServletRequest.getParameter('status')} eq 1"></option>
+                                            <option th:text="停用" value="0"
+                                                    th:selected="${#httpServletRequest.getParameter('status')} eq 0"></option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i>Search
+                                    </button>
                                 </form>
                                 <div class="panel-body no-padding">
-                                    <table class="table table-striped">
-                                        <thead>
-                                        <tr>
-                                            <th>id</th>
-                                            <th>用户名</th>
-                                            <th>密码</th>
-                                            <th>姓名</th>
-                                            <th>性别</th>
-                                            <th>地址</th>
-                                            <th>注册日期</th>
-                                            <th>状态</th>
-                                            <th>启用</th>
-                                            <th>停用</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-                                        <tr th:each="user : ${users}">
-                                            <th scope="row" th:text="${user.getId()}"></th>
-                                            <td th:text="${user.getUsername()}"></td>
-                                            <td th:text="${user.getPassword()}"></td>
-                                            <td th:text="${user.getRealName()}"></td>
-                                            <td th:text="${user.getSex()}"></td>
-                                            <td th:text="${user.getAddress()}"></td>
-                                            <td th:text="${user.getRegDate()}"></td>
-                                            <td th:text="${user_status.get(user.getStatus())}"></td>
-                                            <td>
-                                                <a th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-                                                   th:href="${urlBuilder.replaceQueryParam('enableId').replaceQueryParam('disableId',user.getId()).build().toUriString()}">停用</a>
-                                            </td>
-                                            <td>
-                                                <a th:with="urlBuilder=${T(org.springframework.web.servlet.support.ServletUriComponentsBuilder).fromCurrentRequest()}"
-                                                   th:href="${urlBuilder.replaceQueryParam('disableId').replaceQueryParam('enableId',user.getId()).build().toUriString()}">启用</a>
-                                            </td>
-                                        </tr>
-                                        </tbody>
-                                    </table>
+                                    <form method="POST" name="userForm"
+                                          th:action="${#httpServletRequest.getRequestURL() +'?'+ #httpServletRequest.getQueryString()}">
+                                        <table class="table table-striped">
+                                            <thead>
+                                            <tr>
+                                                <th>id</th>
+                                                <th>用户名</th>
+                                                <th>密码</th>
+                                                <th>姓名</th>
+                                                <th>性别</th>
+                                                <th>地址</th>
+                                                <th>注册日期</th>
+                                                <th>状态</th>
+                                                <th>修改状态</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="user : ${users}">
+                                                <th scope="row" th:text="${user.getId()}"></th>
+                                                <td th:text="${user.getUsername()}"></td>
+                                                <td th:text="${user.getPassword()}"></td>
+                                                <td th:text="${user.getRealName()}"></td>
+                                                <td th:text="${user.getSex()}"></td>
+                                                <td th:text="${user.getAddress()}"></td>
+                                                <td th:text="${user.getRegDate()}"></td>
+                                                <td th:text="${user_status.get(user.getStatus())}"></td>
+                                                <td>
+                                                    <button th:if="${user.getStatus()}==0"
+                                                            class="btn btn-sm btn-success"
+                                                            name="enableId" th:value="${user.getId()}"
+                                                            th:type="submit" href="javascript:form1.submit();">启用
+                                                    </button>
+                                                    <button th:if="${user.getStatus()}==1"
+                                                            class="btn btn-sm  btn-danger"
+                                                            name="disableId" th:value="${user.getId()}"
+                                                            th:type="submit">停用
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </form>
                                     <div class="modal-footer no-margin-top">
                                         <!--使用 th:with 保留所有的筛选条件 -->
                                         <ul class="pagination pull-right no-margin"

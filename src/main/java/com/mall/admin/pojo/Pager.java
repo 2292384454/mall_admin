@@ -15,7 +15,7 @@ import javax.validation.constraints.Min;
  * @author KevinHwang
  */
 @Component
-@ConfigurationProperties(prefix = "com.ecpbm.dao.pojo")
+@ConfigurationProperties(prefix = "com.mall.admin")
 @Data
 public class Pager {
     /**

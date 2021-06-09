@@ -2,22 +2,21 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=UTF-8&useSSL=false
     username: root
-    password: huangkaiyan..QQ
+    password: "huangkaiyan..QQ"
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     # 在controller层就打开EntityManager，由controller层控制session的开启和关闭
     # 设置成false会导致懒加载报错
     open-in-view: true
 
-#分页参数
-com:
-  ecpbm:
-    dao:
-      pojo:
-        per-page-rows: 15
-
 server:
   servlet:
     session:
       #session 过期时间，单位：秒
       timeout: 180
+
+#自定义参数
+com:
+  mall:
+    admin:
+      per-page-rows: 15
